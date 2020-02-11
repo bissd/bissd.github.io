@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>
+        Hexo
+    </title>
+    
+<link rel="stylesheet" href="/libs/highlight/styles/monokai-sublime.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body id="bodyx">
+    <div class="hd posts">
+    <a href="/index.html"><i class="fa fa-reply replay-btn" aria-hidden="true"></i></a>
+    <div class="post-title">
+        <p>
+            Apache 编译问题整理
+        </p>
+        <hr>
+    </div>
+    <div class="post-content">
+        <h2 id="Apache-编译问题整理"><a href="#Apache-编译问题整理" class="headerlink" title="Apache 编译问题整理"></a>Apache 编译问题整理</h2><h4 id="Q"><a href="#Q" class="headerlink" title="Q:"></a>Q:</h4><h5 id="In-function-ssl-proceed-handshake-support-ab-c-undefined-reference-to-EC-curve-nid2nist"><a href="#In-function-ssl-proceed-handshake-support-ab-c-undefined-reference-to-EC-curve-nid2nist" class="headerlink" title="In function ssl_proceed_handshake support/ab.c undefined reference to EC_curve_nid2nist"></a>In function ssl_proceed_handshake support/ab.c undefined reference to EC_curve_nid2nist</h5><p><strong>make报错</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In function ssl_proceed_handshake </span><br><span class="line">support/ab.c undefined reference to `EC_curve_nid2nist`</span><br></pre></td></tr></table></figure>
+
+<p><strong>configure参数</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure —prefix=/usr/local/apache2.4.38 —enable-cgi —with-apr=/usr/local/aprr —with-apr-util=/usr/local/aprr-util —enable-modules=most —enable-mpms-shared=all —with-mpm=event —enable-cgi</span><br></pre></td></tr></table></figure>
+
+<h4 id="A"><a href="#A" class="headerlink" title="A:"></a>A:</h4><p>经查 问题一般出在openssl</p>
+<p>检查openssl 版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl version</span><br></pre></td></tr></table></figure>
+
+<p>检查openssl 路径</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls /usr/local/openssl</span><br><span class="line">bin include lib</span><br></pre></td></tr></table></figure>
+
+<p>修改编译参数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./configure —prefix=/usr/local/apache2.4.38 —enable-cgi —with-apr=/usr/local/aprr —with-apr-util=/usr/local/aprr-util —enable-modules=most —enable-mpms-shared=all —with-mpm=event —enable-cgi --enable-ssl --with-ssl=/usr/local/openssl</span><br><span class="line"><span class="meta">#</span><span class="bash"> 或 关闭openssl</span></span><br><span class="line">./configure —prefix=/usr/local/apache2.4.38 —enable-cgi —with-apr=/usr/local/aprr —with-apr-util=/usr/local/aprr-util —enable-modules=most —enable-mpms-shared=all —with-mpm=event —enable-cgi --disable-ssl</span><br></pre></td></tr></table></figure>
+    </div>
+    
+        <hr class="fhr">
+        <div id="vcomments"></div>
+    
+</div>
+    <div class="footer" id="footer">
+    <p>Copyright © 2020 <a class="flink" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a>.
+        <label class="el-switch el-switch-green el-switch-sm" style="vertical-align: sub;">
+            <input type="checkbox" name="switch" id="update_style">
+            <span class="el-switch-style"></span>
+        </label>
+<!--         <script type="text/javascript">
+        var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+        document.write(unescape("%3Cspan id='cnzz_stat_icon_1278548644'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D1278548644%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+        </script> -->
+    </p>
+</div>
+<input type="hidden" id="web_style" value="black">
+<input type="hidden" id="valine_appid" value="CmCti21ooOOIzFOhEyFkFvR0-gzGzoHsz">
+<input type="hidden" id="valine_appKey" value="FqiyUqbg7McKN2eG0MCewupf">
+
+<script src="/libs/jquery.min.js"></script>
+
+
+<script src="/libs/highlight/highlight.pack.js"></script>
+
+<script src='//cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+
+<script src="/js/js.js"></script>
+
+<style type="text/css">
+.v * {
+    color: #698fca;
+}
+
+.v .vlist .vcard .vhead .vsys {
+    color: #3a3e4a;
+}
+
+.v .vlist .vcard .vh .vmeta .vat {
+    color: #638fd5;
+}
+
+.v .vlist .vcard .vhead .vnick {
+    color: #6ba1ff;
+}
+
+.v a {
+    color: #8696b1;
+}
+
+.v .vlist .vcard .vhead .vnick:hover {
+    color: #669bfc;
+}
+</style>
+
+</body>
+
+</html>

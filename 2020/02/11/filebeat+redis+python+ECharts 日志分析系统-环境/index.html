@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>
+        Hexo
+    </title>
+    
+<link rel="stylesheet" href="/libs/highlight/styles/monokai-sublime.css">
+
+    
+<link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body id="bodyx">
+    <div class="hd posts">
+    <a href="/index.html"><i class="fa fa-reply replay-btn" aria-hidden="true"></i></a>
+    <div class="post-title">
+        <p>
+            filebeat+redis+python+ECharts 日志分析系统-环境
+        </p>
+        <hr>
+    </div>
+    <div class="post-content">
+        <h2 id="filebeat-redis-python-ECharts-日志分析系统-环境"><a href="#filebeat-redis-python-ECharts-日志分析系统-环境" class="headerlink" title="filebeat+redis+python+ECharts 日志分析系统-环境"></a>filebeat+redis+python+ECharts 日志分析系统-环境</h2><h3 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root^@^localhost ~]# cat /etc/centos-release</span><br><span class="line">CentOS Linux release 7.5.1804 (Core)</span><br></pre></td></tr></table></figure>
+
+<h3 id="环境部署"><a href="#环境部署" class="headerlink" title="环境部署"></a>环境部署</h3><h4 id="软件安装"><a href="#软件安装" class="headerlink" title="软件安装"></a>软件安装</h4><h5 id="filebeat"><a href="#filebeat" class="headerlink" title="filebeat"></a>filebeat</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root^@^localhost ~]# #download filebeat rpm file</span><br><span class="line">[root^@^localhost ~]# cd ~/soft</span><br><span class="line">[root^@^localhost soft]# wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.4.3-x86_64.rpm</span><br><span class="line">[root^@^localhost soft]# #安装</span><br><span class="line">[root^@^localhost soft]# rpm -avi filebeat-6.4.3-x86_64.rpm</span><br></pre></td></tr></table></figure>
+
+<h5 id="redis"><a href="#redis" class="headerlink" title="redis"></a>redis</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[root^@^localhost soft]# #download redis </span><br><span class="line">[root^@^localhost soft]# wget http://download.redis.io/releases/redis-5.0.0.tar.gz</span><br><span class="line">[root^@^localhost soft]# #安装</span><br><span class="line">[root^@^localhost soft]# tar xzf redis-5.0.0.tar.gz</span><br><span class="line">[root^@^localhost soft]# cd redis-5.0.0</span><br><span class="line">[root^@^localhost redis-5.0.0]# make</span><br><span class="line">[root^@^localhost src]# cd src/</span><br><span class="line">[root^@^localhost src]# make install PREFIX=/usr/local/redis</span><br><span class="line">[root^@^localhost src]# ln -s /usr/local/redis/bin/redis-server  /usr/bin/</span><br><span class="line">[root^@^localhost src]# ln -s /usr/local/redis/bin/redis-cli  /usr/bin/</span><br></pre></td></tr></table></figure>
+
+<h5 id="Echarts"><a href="#Echarts" class="headerlink" title="Echarts"></a>Echarts</h5><ul>
+<li>参考 <a href="https://s.6haodianpu.com/%22https://echarts.baidu.com//%22" target="_blank" rel="noopener">https://echarts.baidu.com/</a></li>
+</ul>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><h5 id="filebeat-1"><a href="#filebeat-1" class="headerlink" title="filebeat"></a>filebeat</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root^@^localhost src]# cat /etc/filebeat/filebeat.yml</span><br><span class="line">filebeat.inputs:</span><br><span class="line">- type: log</span><br><span class="line">  enabled: true</span><br><span class="line">  paths:</span><br><span class="line">    - /home/wwwlogs/*.log</span><br><span class="line">filebeat.config.modules:</span><br><span class="line">  path: $&#123;path.config&#125;/modules.d/*.yml</span><br><span class="line">  reload.enabled: false</span><br><span class="line">setup.template.settings:</span><br><span class="line">  index.number_of_shards: 3</span><br><span class="line">setup.kibana:</span><br><span class="line"></span><br><span class="line">output.redis:</span><br><span class="line">  hosts: [\"127.0.0.1\"]</span><br><span class="line">  port: 6379</span><br><span class="line">  password: \'password\'</span><br><span class="line">  key: \'nginx-log\'</span><br></pre></td></tr></table></figure>
+
+<h5 id="redis-1"><a href="#redis-1" class="headerlink" title="redis"></a>redis</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root^@^localhost ~]# cat /usr/local/redis/redis.conf  #配置部分酌情修改</span><br><span class="line">daemonize yes               # redis 后台运行</span><br><span class="line">dir /backup/redis           # 备份目录</span><br><span class="line">bind 0.0.0.0                # 绑定地址</span><br><span class="line">requirepass password        # 设置密码</span><br><span class="line">appendonly yes              # 开启aof 备份</span><br><span class="line">appendfilename \"redis.aof\"  # 备份文件</span><br></pre></td></tr></table></figure>
+
+<h4 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h4><h5 id="filebeat-2"><a href="#filebeat-2" class="headerlink" title="filebeat"></a>filebeat</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root^@^localhost ~]# /etc/init.d/filebeat start</span><br></pre></td></tr></table></figure>
+
+<h5 id="redis-2"><a href="#redis-2" class="headerlink" title="redis"></a>redis</h5><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root^@^localhost ~]# redis-server /usr/local/redis/redis.conf</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看启动状态"><a href="#查看启动状态" class="headerlink" title="查看启动状态"></a>查看启动状态</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root^@^localhost ~]# netstat -natp |grep redis</span><br><span class="line">tcp 0 0 127.0.0.1:6379 0.0.0.0:* LISTEN 30945/redis-server</span><br><span class="line"></span><br><span class="line">[root^@^localhost ~]# ps -ef |grep filebeat</span><br><span class="line">root 30981 1 0 11:32 ? 00:00:00 /usr/share/filebeat/bin/filebeat -c /etc/filebeat/filebeat.yml -path.home /usr/share/filebeat -path.config /etc/filebeat -path.data /var/lib/filebeat -path.logs /var/log/filebeat</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看redis-记录状态"><a href="#查看redis-记录状态" class="headerlink" title="查看redis 记录状态"></a>查看redis 记录状态</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root^@^localhost ~]# redis-cli</span><br><span class="line">127.0.0.1:6379&gt; auth password</span><br><span class="line">OK</span><br><span class="line">127.0.0.1:6379&gt; LRANGE nginx-log 0 10</span><br><span class="line">1) \"&#123;\"@timestamp\":\"2018-11-09T03:32:47.326Z\",\"@metadata\":&#123;\"beat\":\"filebeat\",\"type\":\"doc\",\"version\":\"6.4.3\"&#125;,\"host\":&#123;\"name\":\"localhost\"&#125;,\"source\":\"/home/wwwlogs/test.log.log\",\"offset\":170177,\"message\":\"1.119.6.70 - - [09/Nov/2018:11:32:41 +0800] \"GET /?p=110 HTTP/2.0\" 200 25715 \"https://test.com/\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36\"\",\"prospector\":&#123;\"type\":\"log\"&#125;,\"input\":&#123;\"type\":\"log\"&#125;,\"beat\":&#123;\"name\":\"localhost\",\"hostname\":\"localhost\",\"version\":\"6.4.3\"&#125;&#125;\"</span><br></pre></td></tr></table></figure>
+
+<p>发布者：2018年11月9日</p>
+
+    </div>
+    
+        <hr class="fhr">
+        <div id="vcomments"></div>
+    
+</div>
+    <div class="footer" id="footer">
+    <p>Copyright © 2020 <a class="flink" href="https://hexo.io" target="_blank" rel="noopener">Hexo</a>.
+        <label class="el-switch el-switch-green el-switch-sm" style="vertical-align: sub;">
+            <input type="checkbox" name="switch" id="update_style">
+            <span class="el-switch-style"></span>
+        </label>
+<!--         <script type="text/javascript">
+        var cnzz_protocol = (("https:" == document.location.protocol) ? "https://" : "http://");
+        document.write(unescape("%3Cspan id='cnzz_stat_icon_1278548644'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "v1.cnzz.com/stat.php%3Fid%3D1278548644%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));
+        </script> -->
+    </p>
+</div>
+<input type="hidden" id="web_style" value="black">
+<input type="hidden" id="valine_appid" value="CmCti21ooOOIzFOhEyFkFvR0-gzGzoHsz">
+<input type="hidden" id="valine_appKey" value="FqiyUqbg7McKN2eG0MCewupf">
+
+<script src="/libs/jquery.min.js"></script>
+
+
+<script src="/libs/highlight/highlight.pack.js"></script>
+
+<script src='//cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+
+<script src="/js/js.js"></script>
+
+<style type="text/css">
+.v * {
+    color: #698fca;
+}
+
+.v .vlist .vcard .vhead .vsys {
+    color: #3a3e4a;
+}
+
+.v .vlist .vcard .vh .vmeta .vat {
+    color: #638fd5;
+}
+
+.v .vlist .vcard .vhead .vnick {
+    color: #6ba1ff;
+}
+
+.v a {
+    color: #8696b1;
+}
+
+.v .vlist .vcard .vhead .vnick:hover {
+    color: #669bfc;
+}
+</style>
+
+</body>
+
+</html>
